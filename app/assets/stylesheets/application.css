@@ -13,3 +13,8 @@
  *= require_tree .
  *= require_self
  */
+
+ .pagination > * {
+     margin: 0 5px;
+     padding: 2px 5px;
+ }

@@ -8,9 +8,9 @@ class UsersController < ApplicationController
 
     @user = User.new
     @users = if params[:sort]
-               User.search(params[:search]).order("#{params[:sort]}": @sort_order)
+               User.paginate(page: params[:page], per_page: 25).search(params[:search]).order("#{params[:sort]}": @sort_order)
              else
-               User.search(params[:search]).order_users
+               User.paginate(page: params[:page], per_page: 25).search(params[:search]).order_users
              end
     cookies[:sort_order] = @sort_order == 'asc' ? 'desc' : 'asc'
   end
