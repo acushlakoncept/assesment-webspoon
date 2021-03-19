@@ -4,11 +4,15 @@ class UsersController < ApplicationController
   before_action :set_user, only: %i[show edit update destroy]
 
   def index
-    if params[:sort]
-      @users = User.search(params[:search]).order(params[:sort])
-    else
-      @users = User.search(params[:search]).order_users
-    end
+    @sort_order = cookies[:sort_order] || 'asc'
+
+    @user = User.new
+    @users = if params[:sort]
+               User.search(params[:search]).order("#{params[:sort]}": @sort_order)
+             else
+               User.search(params[:search]).order_users
+             end
+    cookies[:sort_order] = @sort_order == 'asc' ? 'desc' : 'asc'
   end
 
   def show; end
@@ -24,7 +28,7 @@ class UsersController < ApplicationController
 
     respond_to do |format|
       if @user.save
-        format.html { redirect_to @user, notice: 'User was successfully created.' }
+        format.html { redirect_to root_path, notice: 'User was successfully created.' }
         format.json { render :show, status: :created, location: @user }
       else
         format.html { render :new, status: :unprocessable_entity }
@@ -38,6 +42,7 @@ class UsersController < ApplicationController
       if @user.update(user_params)
         format.html { redirect_to @user, notice: 'User was successfully updated.' }
         format.json { render :show, status: :ok, location: @user }
+        format.js
       else
         format.html { render :edit, status: :unprocessable_entity }
         format.json { render json: @user.errors, status: :unprocessable_entity }
@@ -48,7 +53,7 @@ class UsersController < ApplicationController
   def destroy
     @user.destroy
     respond_to do |format|
-      format.html { redirect_to users_url, notice: 'User was successfully destroyed.' }
+      format.html { redirect_to root_path, notice: 'User was successfully destroyed.' }
       format.json { head :no_content }
     end
   end
