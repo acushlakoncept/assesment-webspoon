@@ -36,6 +36,8 @@
     <%= form.text_field :status %>
   </div>
 
+  <%= f.select :status, ['active', 'inactive'] %>
+
   <div class="actions">
     <%= form.submit %>
   </div>
