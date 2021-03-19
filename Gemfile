@@ -40,6 +40,7 @@ group :test do
   gem 'database_cleaner'
   gem 'factory_bot_rails', '~> 6.1'
   gem 'shoulda-matchers', '~> 4.5', '>= 4.5.1'
+  gem 'capybara'
 end
 
 group :development do
