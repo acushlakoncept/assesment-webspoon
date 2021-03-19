@@ -23,7 +23,7 @@
 
   <div class="field">
     <%= form.label :title %>
-    <%= form.text_field :title %>
+    <%= form.select :title, ['Mr', 'Mrs', 'Dr.', 'Sir', 'Miss', 'Engr.', 'Arch.', 'Barr.', 'Others'] %>
   </div>
 
   <div class="field">
@@ -33,10 +33,10 @@
 
   <div class="field">
     <%= form.label :status %>
-    <%= form.text_field :status %>
+    <%= form.select :status, ['active', 'inactive'] %>
   </div>
 
-  <%= f.select :status, ['active', 'inactive'] %>
+  
 
   <div class="actions">
     <%= form.submit %>
