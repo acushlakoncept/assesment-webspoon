@@ -31,6 +31,7 @@ class UsersController < ApplicationController
         format.html { redirect_to root_path, notice: 'User was successfully created.' }
         format.json { render :show, status: :created, location: @user }
       else
+        format.turbo_stream
         format.html { render :new, status: :unprocessable_entity }
         format.json { render json: @user.errors, status: :unprocessable_entity }
       end
@@ -42,8 +43,8 @@ class UsersController < ApplicationController
       if @user.update(user_params)
         format.html { redirect_to root_path, notice: 'User was successfully updated.' }
         format.json { render :show, status: :ok, location: @user }
-        format.js
       else
+        format.turbo_stream
         format.html { render :edit, status: :unprocessable_entity }
         format.json { render json: @user.errors, status: :unprocessable_entity }
       end
