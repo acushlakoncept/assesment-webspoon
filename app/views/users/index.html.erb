@@ -1,11 +1,11 @@
 <p id="notice"><%= notice %></p>
 
 <nav class="navbar navbar-dark bg-dark justify-content-between">
-  <a class="navbar-brand">All Users</a>
-    <%# <%= link_to 'Create New User', new_user_path, class: "ml-2 btn btn-success my-2 my-sm-0 text-white" %> 
-    <button type="button" class="ml-2 btn btn-success my-2 my-sm-0" data-toggle="modal" data-target="#exampleModal">
+  <%= link_to 'All Users', root_path, class: "navbar-brand pl-2 pr-2" %>
+    <%= link_to 'Create New User', '#', class: "ml-2 btn btn-success my-2 my-sm-0 text-white", data: { toggle: "modal", target: "#newFormModal"} %>
+    <%# <button type="button" class="ml-2 btn btn-success my-2 my-sm-0" data-toggle="modal" data-target="#newFormModal">
         Create New User
-    </button>
+    </button> %>
 </nav>
 <div class="d-flex justify-content-center m-2">
 <%= form_tag(users_path, method: :get, class: "form-inline") do %>
@@ -38,7 +38,8 @@
         <td><%= user.phone %></td>
         <td class=<%= "#{user.status == 'active' ? 'text-success' : 'text-danger'}" %> > <%= user.status %></td>
         <td><%= link_to 'Edit', edit_user_path(user), class: "btn-sm btn-secondary text-white" %></td>
-        <%# <td><%= link_to 'Edit Mod', edit_user_path(user), data: {remote: true, toggle: "modal", target: "#exampleModal"} class: "btn-sm btn-secondary text-white" </td> %>
+        <%# <td><%= link_to 'Edit', edit_user_path(user), class: "btn-sm btn-secondary text-white", data: { toggle: "modal", target: "#newFormModal" } </td> %>
+        <%# <td><%= link_to 'Edit Mod', edit_user_path(user), data: {remote: true, toggle: "modal", target: "#newFormModal"} class: "btn-sm btn-secondary text-white" </td> %>
         <td><%= link_to 'Destroy', user, method: :delete, data: { confirm: 'Are you sure?' }, class: "btn-sm btn-danger text-white" %></td>
       </tr>
     <% end %>
@@ -50,21 +51,10 @@
 </div>
 
 <!-- Modal -->
-<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="newFormModal" tabindex="-1" role="dialog" aria-labelledby="newFormModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <%= render 'form', user: @user  %>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-      </div>
+      <%= render partial: "form", locals: { user: @user }  %>
     </div>
   </div>
 </div>
