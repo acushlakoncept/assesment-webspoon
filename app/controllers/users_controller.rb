@@ -4,7 +4,11 @@ class UsersController < ApplicationController
   before_action :set_user, only: %i[show edit update destroy]
 
   def index
-    @users = User.search(params[:search]).order_users
+    if params[:sort]
+      @users = User.search(params[:search]).order(params[:sort])
+    else
+      @users = User.search(params[:search]).order_users
+    end
   end
 
   def show; end
