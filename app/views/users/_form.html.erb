@@ -1,4 +1,14 @@
-<%= form_with(model: user, remote: true) do |form| %>
+<%= form_with(model: user, id: dom_id(user)) do |form| %>
+
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">New User</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+
+<div class="modal-body">
   <% if user.errors.any? %>
     <div id="error_explanation">
       <h2><%= pluralize(user.errors.count, "error") %> prohibited this user from being saved:</h2>
@@ -33,9 +43,9 @@
     <%= form.select :status, ['active', 'inactive'], class: "form-control" %>
   </div>
 
-  
-
-  <div class="actions">
-    <%= form.submit %>
-  </div>
+        <div class="modal-footer">
+        <%= form.submit class: "btn btn-primary" %>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+      </div>
+</div>
 <% end %>
