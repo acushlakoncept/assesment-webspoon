@@ -8,8 +8,26 @@
 <input type="text" name="search" id="searchInput" onkeyup="filterList()" class="form-control" placeholder="search users" />
 </div>
 
+<%= turbo_frame_tag 'user' %>
 
-<div class="table-responsive">
+
+
+<div class="table-responsive" data-controller="user-modal" data-user-modal-prevent-default-action-opening="false">
+
+<div data-user-modal-target="container" data-action="click->user-modal#closeBackground keyup@window->user-modal#closeWithKeyboard"
+     class="hidden animated fadeIn fixed inset-0 overflow-y-auto flex items-center justify-center"
+     style="z-index: 9999;">
+  <!-- Modal Inner Container -->
+  <div class="max-w-lg max-h-screen w-full relative">
+    <!-- Modal Card -->
+    <div class="m-1 bg-white rounded shadow">
+      <%= tag.div nil, id: 'user_form' %>
+    </div>
+  </div>
+</div>
+
+
+
 <table class="table table-striped table-hover">
   <thead>
     <tr>
@@ -32,7 +50,7 @@
         <td><%= user.email %></td>
         <td><%= user.phone %></td>
         <td class=<%= "#{user.status == 'active' ? 'text-success' : 'text-danger'}" %> > <%= user.status %></td>
-        <td><%= link_to 'Edit', edit_user_path(user), class: "btn-sm btn-secondary text-white" %></td>
+        <td><%= link_to 'Edit', edit_user_path(user), class: "btn-sm btn-secondary text-white", data: { action: "click->user-modal#open", 'turbo-frame': 'user' } %></td>
         <td><%= link_to 'Destroy', user, method: :delete, data: { confirm: 'Are you sure?' }, class: "btn-sm btn-danger text-white" %></td>
       </tr>
     <% end %>
@@ -51,6 +69,7 @@
     </div>
   </div>
 </div>
+
 
 
 <script>

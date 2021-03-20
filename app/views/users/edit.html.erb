@@ -1,5 +1,7 @@
-<h1>Editing User</h1>
-
-<%= render 'form', user: @user %>
-
-<%= link_to 'Back', users_path %>
+<%= turbo_frame_tag 'user' do %>
+  <turbo-stream target="user_form" action="replace">
+    <template>
+      <%= render partial: "users/form", locals: { user: @user } %>
+    </template>
+  </turbo-stream>
+<% end %>
