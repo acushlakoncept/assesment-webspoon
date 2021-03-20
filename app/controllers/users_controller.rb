@@ -5,7 +5,7 @@ class UsersController < ApplicationController
 
   def index
     @sort_order = cookies[:sort_order] || 'asc'
-
+    
     @user = User.new
     @users = if params[:sort]
                User.paginate(page: params[:page], per_page: 25).search(params[:search]).order("#{params[:sort]}": @sort_order)
@@ -13,6 +13,16 @@ class UsersController < ApplicationController
                User.paginate(page: params[:page], per_page: 25).search(params[:search]).order_users
              end
     cookies[:sort_order] = @sort_order == 'asc' ? 'desc' : 'asc'
+    
+
+  end
+
+  def json_users
+    @json_users = User.all
+    respond_to do |format|
+      format.json { render json: @json_users.to_json }
+    end
+
   end
 
   def show; end
