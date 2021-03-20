@@ -14,16 +14,16 @@
   <thead>
     <tr>
       <th>SN</th>
-      <th><%= link_to "Title", sort: "title"%> &#8593; &#8595;</th>
-      <th><%= link_to "Name", sort: "name"%> &#8593; &#8595;</th>
-      <th><%= link_to "Email", sort: "email"%> &#8593; &#8595;</th>
-      <th><%= link_to "Phone", sort: "phone"%> &#8593; &#8595;</th>
-      <th><%= link_to "Status", sort: "status"%> &#8593; &#8595;</th>
+      <th onclick="sort_table(usersTableBody, 0, asc1); asc1 *= -1; asc2 = 1; asc3 = 1;">Title &#8593; &#8595; </th>
+      <th onclick="sort_table(usersTableBody, 1, asc1); asc1 *= -1; asc2 = 1; asc3 = 1;">Name &#8593;&#8595;</th>
+      <th onclick="sort_table(usersTableBody, 2, asc1); asc1 *= -1; asc2 = 1; asc3 = 1;">Email &#8593;&#8595;</th>
+      <th onclick="sort_table(usersTableBody, 3, asc1); asc1 *= -1; asc2 = 1; asc3 = 1;">Phone &#8593;&#8595;</th>
+      <th onclick="sort_table(usersTableBody, 4, asc1); asc1 *= -1; asc2 = 1; asc3 = 1;">Status &#8593;&#8595;</th>
       <th colspan="3"></th>
     </tr>
   </thead>
 
-  <tbody>
+  <tbody id="usersTableBody">
     <% @users.each_with_index do |user, indx| %>
       <tr class="js--userRow">
         <td><%= indx + 1 %></td>
@@ -62,4 +62,35 @@
        trs = document.querySelectorAll('.js--userRow');
        trs.forEach(tr => tr.style.display = [...tr.children].find(td => td.innerHTML.toUpperCase().includes(filter)) ? '' : 'none');
    };
+
+   let users, asc1 = 1,
+            asc2 = 1,
+            asc3 = 1;
+        window.onload = function () {
+            users = document.getElementById("usersTableBody");
+        }
+
+   sort_table = (tbody, col, asc) => {
+            var rows = tbody.rows,
+                rlen = rows.length,
+                arr = new Array(),
+                i, j, cells, clen;
+            // fill the array with values from the table
+            for (i = 0; i < rlen; i++) {
+                cells = rows[i].cells;
+                clen = cells.length;
+                arr[i] = new Array();
+                for (j = 0; j < clen; j++) {
+                    arr[i][j] = cells[j].innerHTML;
+                }
+            }
+            // sort the array by the specified column number (col) and order (asc)
+            arr.sort(function (a, b) {
+                return (a[col] == b[col]) ? 0 : ((a[col] > b[col]) ? asc : -1 * asc);
+            });
+            // replace existing rows with new rows created from the sorted array
+            for (i = 0; i < rlen; i++) {
+                rows[i].innerHTML = "<td>" + arr[i].join("</td><td>") + "</td>";
+            }
+        }
 </script>
