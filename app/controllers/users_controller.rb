@@ -4,17 +4,8 @@ class UsersController < ApplicationController
   before_action :set_user, only: %i[show edit update destroy]
 
   def index
-    @sort_order = cookies[:sort_order] || 'asc'
-    
     @user = User.new
-    @users = if params[:sort]
-               User.paginate(page: params[:page], per_page: 25).search(params[:search]).order("#{params[:sort]}": @sort_order)
-             else
-               User.paginate(page: params[:page], per_page: 25).search(params[:search]).order_users
-             end
-    cookies[:sort_order] = @sort_order == 'asc' ? 'desc' : 'asc'
-    
-
+    @users = User.paginate(page: params[:page], per_page: 25).search(params[:search]).order_users
   end
 
   def json_users
@@ -52,11 +43,12 @@ class UsersController < ApplicationController
     respond_to do |format|
       if @user.update(user_params)
         format.html { redirect_to root_path, notice: 'User was successfully updated.' }
-        format.json { render :show, status: :ok, location: @user }
       else
-        format.turbo_stream
-        format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: @user.errors, status: :unprocessable_entity }
+        format.turbo_stream do
+          render turbo_stream: turbo_stream.replace('user_form',
+                                                    partial: "users/form",
+                                                    locals: { user: @user })
+        end
       end
     end
   end
