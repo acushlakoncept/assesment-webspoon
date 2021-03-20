@@ -1,0 +1,190 @@
+<p id="notice"><%= notice %></p>
+
+<nav class="navbar navbar-dark bg-dark justify-content-between">
+  <%= link_to 'All Users', '/', class: "navbar-brand pl-2 pr-2" %>
+    <%= link_to 'Create New User', '#', class: "ml-2 btn btn-success my-2 my-sm-0 text-white", data: { toggle: "modal", target: "#newFormModal"} %>
+    <%# <button type="button" class="ml-2 btn btn-success my-2 my-sm-0" data-toggle="modal" data-target="#newFormModal">
+        Create New User
+    </button> %>
+</nav>
+<div class="d-flex justify-content-center m-2">
+<input type="text" name="search" id="searchInput" onkeyup="filterList()" class="form-control" placeholder="search users" />
+</div>
+
+
+
+<div class="table-responsive" id="tableContainer">
+<table class="table table-striped table-hover" id="userTable">
+  <thead>
+    <tr>
+      <th>SN</th>
+      <th onclick="sortTable(0)">Title &#8593;&#8595;</th>
+      <th onclick="sortTable(1)">Name &#8593;&#8595;</th>
+      <th>Email&#8593;&#8595;</th>
+      <th>Phone&#8593;&#8595;</th>
+      <th>Status&#8593;&#8595;</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody id="usersContainer">
+
+    <div data-preloader="" class="text-center" style="position: absolute;left: 50%;margin-top: 30vh;display: block;">
+        <div class="spinner-border" role="status" style="color: #49a347;">
+        </div>
+    </div>
+
+  </tbody>
+</table>
+
+<input type="hidden" name="hidden_page" id="hidden_page" value="1" />
+    <input type="hidden" name="hidden_column_name" id="hidden_column_name" value="id" />
+    <input type="hidden" name="hidden_sort_type" id="hidden_sort_type" value="asc" />
+    <input type="hidden" name="hidden_sort_type1" id="hidden_sort_type1" value="asc" />
+    <input type="hidden" name="hidden_sort_type2" id="hidden_sort_type2" value="asc" />
+    <input type="hidden" name="hidden_sort_type3" id="hidden_sort_type3" value="asc" />
+    <input type="hidden" name="hidden_sort_type4" id="hidden_sort_type4" value="asc" />
+    <input type="hidden" name="hidden_sort_type5" id="hidden_sort_type5" value="asc" />
+    <input type="hidden" name="hidden_sort_type6" id="hidden_sort_type6" value="asc" />
+    <input type="hidden" name="hidden_sort_type7" id="hidden_sort_type7" value="asc" />
+    <input type="hidden" name="hidden_sort_type8" id="hidden_sort_type8" value="asc" />
+
+</div>
+
+<div id="index_native" class="box">
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="newFormModal" tabindex="-1" role="dialog" aria-labelledby="newFormModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <%= render partial: "form", locals: { user: @user }  %>
+    </div>
+  </div>
+</div>
+
+<script>
+
+window.addEventListener("load", function () {
+  fetch('/jsonusers')
+.then((resp) => resp.json())
+.then(function(data) {
+    rowElement = document.getElementById('usersContainer');
+    let spinner = document.querySelector("[data-preloader]");
+
+        html = `
+            <tr class="graybg js--inventoryRow" id="inventoryRow">
+            <td>  %count% </td>    
+            <td>{userTitle}</td>
+            <td>{userName}</td>
+            <td>{userEmail}</td>
+            <td>{userPhone}</td>
+            <td class="{userStatusCSS}">{userStatus}</td>
+            <td><a href="users/{userID}/edit" class="btn-sm btn-secondary text-white">Edit</a></td>
+            <td><a link_to 'Destroy', user, method: :delete, data: { confirm: 'Are you sure?' }, class: "btn-sm btn-danger text-white" %>
+            </td>  
+            <td><a data-confirm="Are you sure?" class="btn-sm btn-danger text-white" rel="nofollow" data-method="delete" href="/users/{userID}">Destroy</a></td>
+        </tr>
+                    `;
+
+    let count = 0;
+
+       data.forEach(el => {
+        count += 1;
+       //Replace the placeholder text with some actual data
+       newHtml = html.replace('%count%', count);
+       newHtml = newHtml.replace(/{userID}/g, el.id);
+       newHtml = newHtml.replace(/{userTitle}/g, el.title);
+       newHtml = newHtml.replace(/{userName}/g, el.name);
+       newHtml = newHtml.replace(/{userEmail}/g, el.email);
+       newHtml = newHtml.replace(/{userPhone}/g, el.phone);
+       newHtml = newHtml.replace(/{userStatus}/g, el.status);
+       newHtml = newHtml.replace(/{userStatusCSS}/g, el.status == 'active' ? 'text-success' : 'text-danger');
+
+       //Insert the HTML into the DOM
+       spinner.style.display = "none";
+       rowElement.insertAdjacentHTML('beforeend', newHtml);
+   });
+
+   filterList = () => {
+       let searchInput, filter, tr, i, td, txtValue;
+       
+       searchInput = document.getElementById('searchInput');
+       filter = searchInput.value.toUpperCase();
+       trs = document.querySelectorAll('.js--inventoryRow');
+       trs.forEach(tr => tr.style.display = [...tr.children].find(td => td.innerHTML.toUpperCase().includes(filter)) ? '' : 'none');
+   };
+
+
+  console.log(data);
+  })
+.catch(function(error) {
+  console.log(error);
+});
+
+
+    // create_sample_table(document.getElementById("tableContainer"));
+    // paginator({
+    //     table: document.getElementById("table_box_native").getElementsByTagName("table")[0],
+    //     box: document.getElementById("index_native"),
+    //     active_class: "color_page"
+    // });
+}, false);
+
+
+//   const sortTable = n => {
+//   var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+//   table = document.getElementById("userTable");
+//   switching = true;
+//   // Set the sorting direction to ascending:
+//   dir = "asc";
+//   /* Make a loop that will continue until
+//   no switching has been done: */
+//   while (switching) {
+//     // Start by saying: no switching is done:
+//     switching = false;
+//     rows = table.rows;
+//     /* Loop through all table rows (except the
+//     first, which contains table headers): */
+//     for (i = 1; i < (rows.length - 1); i++) {
+//       // Start by saying there should be no switching:
+//       shouldSwitch = false;
+//       /* Get the two elements you want to compare,
+//       one from current row and one from the next: */
+//       x = rows[i].getElementsByTagName("TD")[n];
+//       y = rows[i + 1].getElementsByTagName("TD")[n];
+//       /* Check if the two rows should switch place,
+//       based on the direction, asc or desc: */
+//       if (dir == "asc") {
+//         if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+//           // If so, mark as a switch and break the loop:
+//           shouldSwitch = true;
+//           break;
+//         }
+//       } else if (dir == "desc") {
+//         if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+//           // If so, mark as a switch and break the loop:
+//           shouldSwitch = true;
+//           break;
+//         }
+//       }
+//     }
+//     if (shouldSwitch) {
+//       /* If a switch has been marked, make the switch
+//       and mark that a switch has been done: */
+//       rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+//       switching = true;
+//       // Each time a switch is done, increase this count by 1:
+//       switchcount ++;
+//     } else {
+//       /* If no switching has been done AND the direction is "asc",
+//       set the direction to "desc" and run the while loop again. */
+//       if (switchcount == 0 && dir == "asc") {
+//         dir = "desc";
+//         switching = true;
+//       }
+//     }
+//   }
+// }
+
+</script>
